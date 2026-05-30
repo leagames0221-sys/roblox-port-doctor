@@ -1,0 +1,19 @@
+{
+  "name": "roblox-port-doctor",
+  "version": "0.1.0",
+  "description": "AI-assisted Luau/Roblox debug automation. Deterministic rule engine + LLM-grounded fix proposals. Domain-agnostic core + packs (roblox default, ue5-port optional for UE5/C++ migrations).",
+  "type": "module",
+  "bin": {
+    "roblox-port-doctor": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc && node --test \"tests/**/*.test.mjs\""
+  },
+  "keywords": ["roblox", "luau", "lint", "static-analysis", "debug", "ai", "ue5", "port"],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,32 @@
+# deps / build
+node_modules/
+dist/
+
+# secrets (K-4)
+.env
+.dev.vars
+*.key
+*.pem
+
+# dual-track: internal working docs stay local (not in PUBLIC repo)
+CLAUDE.md
+docs/STAGE1_DISCOVERY.md
+docs/STAGE2_REQUIREMENTS.md
+docs/STAGE3_DESIGN.md
+docs/STAGE4_TASKS.md
+
+# throwaway smoke / verification artifacts
+smoke_*.txt
+_vr.txt
+test_run.txt
+final_test.txt
+tracked_check.txt
+.smoke_err.log
+err.log
+buggy.lua
+*.tmp
+
+# os / logs
+*.log
+.DS_Store
+Thumbs.db

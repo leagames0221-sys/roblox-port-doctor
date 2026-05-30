@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dev deps (ignore-scripts for supply-chain safety)
+        run: npm install --ignore-scripts
+      - name: Type check
+        run: npm run typecheck
+      - name: Test (tsc build + node:test)
+        run: npm test
+      - name: Audit (runtime deps only)
+        run: npm audit --omit=dev --audit-level=high
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan (literal credential patterns)
+        run: |
+          if git grep -nIE '(sk-ant-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA|OPENSSH|PRIVATE) KEY-----)' -- . ':(exclude).github/*'; then
+            echo "potential secret found"; exit 1
+          else
+            echo "no secrets"
+          fi
