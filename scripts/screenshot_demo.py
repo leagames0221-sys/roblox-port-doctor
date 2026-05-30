@@ -91,6 +91,8 @@ def wrap(line: str, width: int):
 
 
 def render(cmd_label: str, output: str, out_path: Path, title: str, wrap_w: int = 80):
+    # Consolas lacks U+2605; render the confidence stars as ASCII for the PNG.
+    output = output.replace("★", "*")
     raw = [f"$ {cmd_label}", ""] + output.rstrip().splitlines()
     lines = []
     for ln in raw:
