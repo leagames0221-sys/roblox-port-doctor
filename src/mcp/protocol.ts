@@ -41,13 +41,14 @@ function error(id: Id, code: number, message: string): object {
  * Never throws.
  */
 export function handleMessage(msg: JsonRpcMessage): object | null {
-  const id: Id = msg.id ?? null;
   const method = msg.method;
 
-  // Notifications carry no id and expect no response (R4).
-  if (method === "notifications/initialized" || method === "initialized") {
-    return null;
-  }
+  // JSON-RPC: a message with no `id` member is a NOTIFICATION — the server must
+  // never reply to it, regardless of method (covers notifications/initialized,
+  // notifications/cancelled, …). Requests always carry an id (R4).
+  if (!("id" in msg)) return null;
+
+  const id: Id = msg.id ?? null;
 
   switch (method) {
     case "initialize": {

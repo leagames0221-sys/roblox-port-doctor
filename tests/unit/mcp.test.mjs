@@ -19,6 +19,24 @@ test("notifications/initialized produces no response (R4)", () => {
   assert.equal(r, null);
 });
 
+test("any notification (no id) gets no reply, even unknown methods (R4, JSON-RPC)", () => {
+  // Regression: previously an unknown method without an id wrongly got a -32601
+  // error reply, violating JSON-RPC's "never respond to a notification".
+  assert.equal(handleMessage({ jsonrpc: "2.0", method: "notifications/cancelled" }), null);
+  assert.equal(handleMessage({ jsonrpc: "2.0", method: "some/unknown" }), null);
+});
+
+test("unknown method WITH an id still returns -32601 (R8)", () => {
+  const r = handleMessage({ jsonrpc: "2.0", id: 99, method: "some/unknown" });
+  assert.equal(r.error.code, -32601);
+  assert.equal(r.id, 99);
+});
+
+test("request id 0 is preserved, not coerced to null", () => {
+  const r = handleMessage({ jsonrpc: "2.0", id: 0, method: "tools/list" });
+  assert.equal(r.id, 0);
+});
+
 test("tools/list advertises both tools with object inputSchema (R5)", () => {
   const r = req(2, "tools/list");
   const names = r.result.tools.map((t) => t.name);
