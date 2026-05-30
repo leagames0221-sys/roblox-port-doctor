@@ -42,7 +42,9 @@ fix → re-run" loop is first-party. Competing with it, or reimplementing the 28
 luau-analyze already ships, would be wasted work. Instead this tool does the
 **deterministic, offline, zero-cost** part the platform *doesn't*: security/authority
 rules, port pitfalls, and error→fix triage — and exposes triage as a clean **seam** an
-MCP step can later wrap (see [ADR-007](docs/adr/ADR-007-offline-triage-mcp-seam.md)).
+MCP step can wrap (see [ADR-007](docs/adr/ADR-007-offline-triage-mcp-seam.md)). That
+wrapper now ships: a zero-dependency **MCP stdio server** (see *Use it from an AI agent*
+below and [ADR-008](docs/adr/ADR-008-mcp-stdio-server.md)).
 
 ## How this came together
 
@@ -87,6 +89,39 @@ import { analyze, applyDeterministicFixes, triageErrors } from "roblox-port-doct
 const findings = analyze(source, { packs: ["roblox", "ue5-port"] });
 const diagnoses = triageErrors(consoleOutput, { source, findings });
 ```
+
+## Use it from an AI agent (MCP)
+
+An AI agent running inside Roblox Studio (via the official built-in MCP server) — or any
+MCP client like Claude or Cursor — can call the triage and analysis engine directly. The
+server speaks the MCP **stdio** transport and is **hand-rolled with zero runtime
+dependencies** (we deliberately did not pull the official SDK's 17 transitive deps — see
+[ADR-008](docs/adr/ADR-008-mcp-stdio-server.md)).
+
+```bash
+npm run build
+node dist/mcp/server.js     # or, once installed: roblox-port-doctor-mcp
+```
+
+Register it with an MCP client (example config):
+
+```json
+{
+  "mcpServers": {
+    "roblox-port-doctor": { "command": "node", "args": ["dist/mcp/server.js"] }
+  }
+}
+```
+
+Exposed tools:
+
+| tool | input | does |
+|---|---|---|
+| `triage_errors` | `consoleOutput` (required), `source?`, `packs?` | turn a console error dump (e.g. from the official `get_console_output`) into diagnoses + fixes |
+| `analyze_source` | `source` (required), `packs?` | static analysis over Luau source text |
+
+Everything stays offline and deterministic — the server is a pure pass-through to the same
+engine the CLI uses; no network, no filesystem writes, no LLM call.
 
 ## Rule & classifier inventory (v0)
 
@@ -156,8 +191,11 @@ rule packs, fix, error parsing, triage, and an end-to-end pipeline). Evidence:
   correctness/style; this adds the security + port + triage layer.
 - **Triage recall is bounded** by its 6 classifiers; unknown errors are reported as
   `unrecognized` rather than guessed.
-- **No Studio/MCP integration yet** — CLI + library only. The triage engine is built as a
-  seam an MCP server wrapper can later call (ADR-007); that wrapper is a follow-up.
+- **MCP server is stdio-only and minimal** — it implements the minimal MCP stdio method
+  set by hand (initialize / tools/list / tools/call); HTTP/SSE transport, OAuth, resources,
+  prompts and sampling are out of scope by design (ADR-008). It does not drive Studio's
+  live run-loop — that is first-party (ADR-007); this tool is the deterministic step an
+  agent calls *within* that loop.
 
 ## License
 

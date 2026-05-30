@@ -70,5 +70,7 @@ Exit code 1 (errors present). Static analysis + `--fix` (rewrites `!=`→`~=`,
 ## Status
 v0 rebuilt per Stage 1–4 design and verified (type check + 59 tests, 0 fail). Inventory:
 roblox 7 rules, ue5-port 10 rules, triage 6 classifiers. README + ADR-001..007 + LICENSE.
-Follow-up (not done): git init / publish, demo asset, MCP-server wrapper around the triage
-seam, live `--explain` probe against Workers AI, strong-hire 18+M1-M5 公開前 apply.
+Follow-up status: git init / publish ✅, demo asset ✅, strong-hire 18+M1-M5 ✅,
+**MCP-server wrapper around the triage seam ✅ (ADR-008; see
+2026-05-30-mcp-wrapper-verification.md — now 69 tests)**. Remaining: live `--explain`
+probe against Workers AI (optional).

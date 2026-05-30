@@ -4,7 +4,8 @@
   "description": "AI-assisted Luau/Roblox debug automation. Deterministic rule engine + LLM-grounded fix proposals. Domain-agnostic core + packs (roblox default, ue5-port optional for UE5/C++ migrations).",
   "type": "module",
   "bin": {
-    "roblox-port-doctor": "./dist/cli.js"
+    "roblox-port-doctor": "./dist/cli.js",
+    "roblox-port-doctor-mcp": "./dist/mcp/server.js"
   },
   "scripts": {
     "build": "tsc",

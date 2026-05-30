@@ -14,6 +14,9 @@ docs/STAGE1_DISCOVERY.md
 docs/STAGE2_REQUIREMENTS.md
 docs/STAGE3_DESIGN.md
 docs/STAGE4_TASKS.md
+docs/STAGE5_MCP_REQUIREMENTS.md
+docs/STAGE6_MCP_DESIGN.md
+docs/STAGE7_MCP_TASKS.md
 
 # throwaway smoke / verification / demo-capture artifacts
 smoke_*.txt

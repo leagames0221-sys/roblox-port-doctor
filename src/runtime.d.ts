@@ -14,10 +14,24 @@ declare module "node:fs" {
   export function readFileSync(path: string | number, encoding: "utf8"): string;
 }
 
+interface ReadableStdin {
+  on(event: "data", cb: (chunk: string) => void): void;
+  on(event: "end", cb: () => void): void;
+  setEncoding(encoding: "utf8"): void;
+  resume(): void;
+}
+
+interface WritableStd {
+  write(s: string): void;
+}
+
 declare const process: {
   argv: string[];
   env: Record<string, string | undefined>;
   exit(code?: number): never;
+  stdin: ReadableStdin;
+  stdout: WritableStd;
+  stderr: WritableStd;
 };
 
 declare const console: {
