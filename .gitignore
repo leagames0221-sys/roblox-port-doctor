@@ -15,13 +15,17 @@ docs/STAGE2_REQUIREMENTS.md
 docs/STAGE3_DESIGN.md
 docs/STAGE4_TASKS.md
 
-# throwaway smoke / verification artifacts
+# throwaway smoke / verification / demo-capture artifacts
 smoke_*.txt
 _vr.txt
 test_run.txt
 final_test.txt
 tracked_check.txt
+remote_tree_dump.txt
 .smoke_err.log
+.demo_*.lua
+.demo_*.log
+.demo_*_out.txt
 err.log
 buggy.lua
 *.tmp
