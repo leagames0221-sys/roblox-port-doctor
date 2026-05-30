@@ -44,6 +44,22 @@ luau-analyze already ships, would be wasted work. Instead this tool does the
 rules, port pitfalls, and error→fix triage — and exposes triage as a clean **seam** an
 MCP step can later wrap (see [ADR-007](docs/adr/ADR-007-offline-triage-mcp-seam.md)).
 
+## How this came together
+
+- **Motivation.** The first prototype tried to be a general Luau linter. A prior-art pass
+  (May 2026) showed that space is already well served — `luau-analyze` ships 28 lints and
+  `selene` is mature — so a clone would have been wasted work, and worse, it would compete
+  with first-party tooling instead of helping.
+- **Approach.** I deliberately *narrowed* scope to the gaps those tools leave open
+  (security/authority, UE5→Luau ports, runtime error→fix triage), built a domain-agnostic
+  engine so each gap is a small injected pack, and kept the LLM strictly optional so the
+  product is reproducible and free by default. Every design fork is recorded in an ADR.
+- **Result & what I learned.** v0 ships 7 + 10 rules and 6 deterministic error
+  classifiers, **59 tests green in CI, zero runtime dependencies**. The sharpest lesson
+  was a discipline one: *subtracting* the overlapping rules (9→7) made the tool stronger
+  than adding more would have — positioning beats feature count. Recall is intentionally
+  bounded (see Limitations) rather than over-claimed.
+
 ## Install & usage
 
 Requires Node.js ≥ 20.
