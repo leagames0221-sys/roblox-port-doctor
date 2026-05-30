@@ -1,6 +1,6 @@
 # roblox-port-doctor
 
-[![CI](https://img.shields.io/badge/tests-passing-brightgreen)](#verification)
+[![CI](https://github.com/leagames0221-sys/roblox-port-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/leagames0221-sys/roblox-port-doctor/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **A focused debug assistant for Luau / Roblox** — it covers the gap the official tooling
