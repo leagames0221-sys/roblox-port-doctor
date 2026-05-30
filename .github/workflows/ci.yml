@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,23 +17,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      # Zero runtime deps; dev tool (typescript) only. Disable post-install scripts.
       - name: Install dev deps (ignore-scripts for supply-chain safety)
         run: npm install --ignore-scripts
       - name: Type check
         run: npm run typecheck
       - name: Test (tsc build + node:test)
         run: npm test
-      - name: Audit (runtime deps only)
+      - name: Dependency audit (runtime deps only)
         run: npm audit --omit=dev --audit-level=high
 
   secret-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Secret scan (literal credential patterns)
+      - name: Secret pattern scan
         run: |
-          if git grep -nIE '(sk-ant-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA|OPENSSH|PRIVATE) KEY-----)' -- . ':(exclude).github/*'; then
-            echo "potential secret found"; exit 1
-          else
-            echo "no secrets"
+          if git grep -nIE '(sk-ant-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|gho_[A-Za-z0-9]{36}|-----BEGIN (RSA|OPENSSH|EC|DSA|PRIVATE) KEY-----)' -- . ':(exclude).github/workflows/*'; then
+            echo "::error::potential secret found in tracked files"
+            exit 1
           fi
+          echo "OK: no secret patterns in tracked files"
