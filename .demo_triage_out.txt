@@ -1,0 +1,14 @@
+roblox-port-doctor triage:
+
+  1. [nil-index] ★★★  ServerScriptService.PlayerService:7
+     error: attempt to index nil with 'leaderstats'
+     why:   A value that is `nil` is being indexed to read `.leaderstats`. The parent expression evaluated to nil at runtime (line 7).
+     fix:   Guard the parent before reading `.leaderstats`: `if parent then ... end`, or use `:WaitForChild("leaderstats")` if it is an Instance that should exist. For leaderstats/replicated objects, confirm the server created them before the client reads.
+     stack: ServerScriptService.PlayerService:7 (onJoin)
+
+  2. [infinite-loop] ★★★  ServerScriptService.Loop:18
+     error: Script timeout: exhausted allowed execution time
+     why:   The script ran too long without yielding (line 18) — almost always a loop with no `task.wait()` or event yield.
+     fix:   Add a `task.wait()` inside the loop body, or restructure the work to run on a RunService event (Heartbeat/Stepped) instead of a busy `while true do` loop.
+
+  2 error(s): 2 recognized, 0 unrecognized

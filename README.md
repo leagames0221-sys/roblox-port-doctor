@@ -18,17 +18,9 @@ It is the **downstream sibling** of
 
 **1. Static analysis — security / authority / reliability (`roblox` pack, default):**
 
-```
-$ roblox-port-doctor PlayerService.luau
+![Static analysis on a buggy server script](docs/assets/demo-static.png)
 
-  [SEC ] RBX-SEC-003  PlayerService.luau:13:7
-         RemoteEvent server handler: validate and sanitize every client argument.
-         fix: Never trust the client: check types, ranges and ownership.
-  [WARN] RBX-DS-001   PlayerService.luau:5:24
-         DataStore *Async call should be wrapped in pcall (it can throw).
-  [ERR ] RBX-PERF-001 PlayerService.luau:17:1
-         `while true do` loop with no yield will freeze the script (and Studio).
-```
+*(real CLI output — regenerate with `python scripts/screenshot_demo.py`)*
 
 **2. UE5→Luau port pitfalls (`ue5-port` pack, opt-in):** `&&`/`||`/`!=`/`nullptr`,
 0-based indexing, leftover `UE_LOG`/`std::`, client-side authority. Mechanical ones are
@@ -36,15 +28,7 @@ auto-fixable with `--fix`.
 
 **3. Runtime error triage (the flagship) — turn a console dump into a fix:**
 
-```
-$ roblox-port-doctor --triage error.log --src PlayerService.luau
-
-  1. [nil-index] ★★★  ServerScriptService.PlayerService:7
-     error: attempt to index nil with 'leaderstats'
-     why:   A value that is nil is being indexed to read `.leaderstats`...
-     fix:   Guard the parent, or use :WaitForChild("leaderstats")...
-     ↳ related static finding: RBX-NIL-001 — Indexing a FindFirstChild result...
-```
+![Runtime error triage producing diagnosis and fix](docs/assets/demo-triage.png)
 
 It parses the exact text Roblox's console (and the official MCP `get_console_output`
 tool) emits, classifies each error deterministically, and proposes a fix — or says

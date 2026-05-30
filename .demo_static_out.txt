@@ -1,0 +1,18 @@
+roblox-port-doctor: .demo_static.lua
+
+  [SEC ] RBX-SEC-003  .demo_static.lua:1:7
+         RemoteEvent/RemoteFunction server handler: validate and sanitize every client argument.
+         | remote.OnServerEvent:Connect(function(plr, amount)
+         fix: Never trust the client: check types, ranges and ownership of every parameter before acting (server-authority).
+
+  [WARN] RBX-DS-001  .demo_static.lua:5:6
+         DataStore *Async call should be wrapped in pcall (it can throw).
+         | store:SetAsync(plr.UserId, 100)
+         fix: Wrap the call: `local ok, res = pcall(function() return store:GetAsync(key) end)` and retry on failure.
+
+  [ERR ] RBX-PERF-001  .demo_static.lua:6:1
+         `while true do` loop with no yield will freeze the script (and Studio).
+         | while true do
+         fix: Add a task.wait() inside the loop, or drive the work from a RunService event instead of a busy loop.
+
+  3 issue(s): 1 security, 1 error, 1 warning, 0 info
