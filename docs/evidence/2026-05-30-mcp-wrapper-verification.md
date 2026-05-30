@@ -6,7 +6,7 @@ roblox-port-doctor — MCP server wrapper (Phase 1.5, ADR-008).
 `npm test` (= `tsc && node --test`, argument-free auto-discovery)
 
 ## Result
-**73 tests, 73 pass, 0 fail.** (was 59; +14 from the new MCP suite.)
+**72 tests, 72 pass, 0 fail.** (was 59; +13 from the new MCP suite.)
 
 ## Post-implementation audit fix (2026-05-30)
 An objective edge-case audit found one real protocol bug: a JSON-RPC **notification**
@@ -15,7 +15,7 @@ MCP-standard `notifications/cancelled` — wrongly received a `-32601` error rep
 forbids responding to notifications. Fixed: `handleMessage` now returns null for **any**
 message lacking an `id`, regardless of method; unknown methods that DO carry an id still
 return `-32601`. Added regression tests (notification-no-reply, unknown-with-id → -32601,
-id:0 preserved). Other audited edges were already correct: id `0` preserved (not coerced
+id:0 preserved); 72 tests pass. Other audited edges were already correct: id `0` preserved (not coerced
 to null), `tools/call` with no params → in-band isError, empty `consoleOutput` → isError,
 CRLF input parsed, stdout carries only single-line JSON.
 
